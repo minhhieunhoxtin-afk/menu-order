@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quà Tặng Cho Tuyền</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    overflow: hidden;
+    font-family: 'Quicksand', sans-serif;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 107, 157, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(168, 105, 255, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(255, 183, 77, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 10% 90%, rgba(100, 200, 255, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 90% 70%, rgba(255, 130, 200, 0.3) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+    z-index: 0;
+}
+
+@keyframes bgPulse {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(2%, -2%) scale(1.02); }
+    66% { transform: translate(-1%, 1%) scale(0.98); }
+    100% { transform: translate(1%, -1%) scale(1.01); }
+}
+
+.bg-petals {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.bg-petal {
+    position: absolute;
+    font-size: 1.8em;
+    opacity: 0.4;
+    animation: bgPetalFall linear infinite;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+@keyframes bgPetalFall {
+    0% { transform: translateY(-60px) rotate(0deg) translateX(0); opacity: 0; }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(110vh) rotate(400deg) translateX(80px); opacity: 0; }
+}
+
+.gift-scene {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+}
+
+.gift-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.8em;
+    color: #fff;
+    margin-bottom: 35px;
+    text-shadow: 0 2px 20px rgba(255, 255, 255, 0.4), 0 4px 30px rgba(102, 126, 234, 0.5);
+    animation: titleBounce 3s ease-in-out infinite, titleGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes titleBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+@keyframes titleGlow {
+    from { text-shadow: 0 2px 20px rgba(255, 255, 255, 0.4), 0 4px 30px rgba(102, 126, 234, 0.5); }
+    to { text-shadow: 0 2px 30px rgba(255, 255, 255, 0.6), 0 4px 50px rgba(233, 30, 99, 0.5); }
+}
+
+.gift-wrapper {
+    position: relative;
+    width: 200px;
+    height: 240px;
+    margin: 0 auto 28px;
+    cursor: pointer;
+    transition: transform 0.3s;
+    animation: giftFloat 3s ease-in-out infinite;
+}
+
+@keyframes giftFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-5px) rotate(1deg); }
+    75% { transform: translateY(3px) rotate(-1deg); }
+}
+
+.gift-wrapper:hover {
+    transform: scale(1.08) translateY(-10px);
+}
+
+.gift-shadow {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 16px;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.2), transparent 70%);
+    border-radius: 50%;
+    filter: blur(6px);
+    animation: shadowPulse 3s ease-in-out infinite;
+}
+
+@keyframes shadowPulse {
+    0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.2; }
+    50% { transform: translateX(-50%) scale(0.85); opacity: 0.12; }
+}
+
+.box-body {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 170px;
+    height: 140px;
+    background: linear-gradient(145deg, #ff6b9d, #e91e63, #c2185b);
+    border-radius: 14px;
+    box-shadow:
+        inset 0 -6px 18px rgba(0, 0, 0, 0.15),
+        inset 0 6px 18px rgba(255, 255, 255, 0.25),
+        0 12px 35px rgba(233, 30, 99, 0.35);
+    overflow: hidden;
+}
+
+.box-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 100%);
+    border-radius: 14px 14px 0 0;
+}
+
+.ribbon-v {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 26px;
+    height: 100%;
+    background: linear-gradient(90deg, #f9a825, #ffee58, #fff9c4, #ffee58, #f9a825);
+    box-shadow: 0 0 12px rgba(249, 168, 37, 0.4);
+}
+
+.ribbon-v::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 30%, rgba(255, 255, 255, 0.5) 50%, transparent 70%);
+}
+
+.ribbon-h {
+    position: absolute;
+    top: 45%;
+    left: 0;
+    width: 100%;
+    height: 26px;
+    background: linear-gradient(180deg, #f9a825, #ffee58, #fff9c4, #ffee58, #f9a825);
+    box-shadow: 0 0 12px rgba(249, 168, 37, 0.4);
+}
+
+.ribbon-h::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(180deg, transparent 30%, rgba(255, 255, 255, 0.5) 50%, transparent 70%);
+}
+
+.box-lid {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 190px;
+    height: 65px;
+    background: linear-gradient(145deg, #ff6b9d, #e91e63, #c2185b);
+    border-radius: 14px 14px 6px 6px;
+    z-index: 5;
+    transform-origin: bottom center;
+    transition: transform 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    box-shadow:
+        inset 0 -4px 12px rgba(0, 0, 0, 0.12),
+        inset 0 4px 12px rgba(255, 255, 255, 0.2),
+        0 -4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.box-lid::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 100%);
+    border-radius: 14px 14px 0 0;
+}
+
+.box-lid .ribbon-v-lid {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 26px;
+    height: 100%;
+    background: linear-gradient(90deg, #f9a825, #ffee58, #fff9c4, #ffee58, #f9a825);
+    box-shadow: 0 0 12px rgba(249, 168, 37, 0.4);
+}
+
+.box-lid .ribbon-v-lid::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 30%, rgba(255, 255, 255, 0.5) 50%, transparent 70%);
+}
+
+.bow {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    width: 90px;
+    height: 55px;
+    transition: transform 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.bow-loop-l,
+.bow-loop-r {
+    position: absolute;
+    top: 10px;
+    width: 34px;
+    height: 28px;
+    background: linear-gradient(135deg, #ffee58, #fff9c4, #ffee58);
+    border-radius: 50% 50% 10% 10%;
+    box-shadow: 0 0 18px rgba(255, 238, 88, 0.5);
+}
+
+.bow-loop-l {
+    left: 6px;
+    transform: rotate(-25deg);
+}
+
+.bow-loop-r {
+    right: 6px;
+    transform: rotate(25deg);
+}
+
+.bow-loop-l::after,
+.bow-loop-r::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.7), transparent);
+    border-radius: 50%;
+}
+
+.bow-loop-l::after {
+    left: 7px;
+}
+
+.bow-loop-r::after {
+    right: 7px;
+}
+
+.bow-knot {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 18px;
+    background: radial-gradient(circle, #ffee58, #f9a825);
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(255, 238, 88, 0.6);
+    z-index: 11;
+}
+
+.bow-tail-l,
+.bow-tail-r {
+    position: absolute;
+    bottom: 0;
+    width: 14px;
+    height: 30px;
+    background: linear-gradient(180deg, #ffee58, #f9a825);
+    border-radius: 0 0 6px 6px;
+}
+
+.bow-tail-l {
+    left: 24px;
+    transform: rotate(15deg);
+    transform-origin: top center;
+}
+
+.bow-tail-r {
+    right: 24px;
+    transform: rotate(-15deg);
+    transform-origin: top center;
+}
+
+.gift-wrapper.opened .box-lid {
+    transform: translateX(-50%) rotateX(-130deg) translateY(-70px);
+}
+
+.gift-wrapper.opened .bow {
+    transform: translateX(-50%) translateY(-110px) rotate(25deg) scale(0.7);
+}
+
+.box-sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #f9a825;
+    border-radius: 50%;
+    opacity: 0;
+    animation: sparkleAnim 1.5s ease-in-out infinite;
+    box-shadow: 0 0 8px #f9a825;
+}
+
+@keyframes sparkleAnim {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1.5); }
+}
+
+.gift-hint {
+    color: #fff;
+    font-size: 1em;
+    animation: hintPulse 2s ease-in-out infinite;
+    opacity: 0.9;
+    text-shadow: 0 1px 10px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes hintPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+.particle {
+    position: absolute;
+    pointer-events: none;
+    z-index: 20;
+    animation: particleFly 1.2s ease-out forwards;
+}
+
+@keyframes particleFly {
+    0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: translate(var(--px), var(--py)) scale(0.3) rotate(360deg); }
+}
+
+.flower-selection {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.flower-selection.active {
+    display: flex;
+}
+
+.selection-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.4em;
+    color: #fff;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 20px rgba(255, 255, 255, 0.4), 0 4px 40px rgba(102, 126, 234, 0.5);
+    animation: selectionTitleGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes selectionTitleGlow {
+    from { text-shadow: 0 2px 20px rgba(255, 255, 255, 0.4), 0 4px 40px rgba(102, 126, 234, 0.5); }
+    to { text-shadow: 0 2px 30px rgba(255, 255, 255, 0.6), 0 4px 60px rgba(233, 30, 99, 0.5); }
+}
+}
+
+.selection-subtitle {
+    color: #7b1fa2;
+    margin-bottom: 28px;
+    font-size: 0.92em;
+    color: rgba(255, 255, 255, 0.8);
+    opacity: 1;
+}
+
+.flower-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    max-width: 380px;
+    margin-bottom: 20px;
+}
+
+.flower-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    padding: 20px 14px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.flower-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+}
+
+.flower-card:hover::before {
+    opacity: 1;
+}
+
+.flower-card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 16px 48px rgba(233, 30, 99, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.flower-card.selected {
+    border-color: rgba(233, 30, 99, 0.6);
+    background: rgba(233, 30, 99, 0.2);
+    box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.2), 0 8px 32px rgba(233, 30, 99, 0.3);
+}
+
+.flower-card.selected::after {
+    content: '\2713';
+    position: absolute;
+    top: 7px;
+    right: 9px;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, #e91e63, #c2185b);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.7em;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: checkPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 2px 10px rgba(233, 30, 99, 0.4);
+}
+
+@keyframes checkPop {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+.flower-card-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 8px;
+    display: block;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: #fce4ec;
+}
+
+.flower-card:hover .flower-card-img {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+.flower-card.selected .flower-card-img {
+    transform: scale(1.08);
+    border-color: #e91e63;
+}
+
+.flower-card .flower-emoji {
+    font-size: 2.8em;
+    display: block;
+    margin-bottom: 6px;
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.flower-card:hover .flower-emoji {
+    transform: scale(1.2) rotate(-5deg);
+}
+
+.flower-card.selected .flower-emoji {
+    transform: scale(1.15);
+}
+
+.flower-name {
+    color: #fff;
+    font-size: 0.88em;
+    font-weight: 700;
+    margin-bottom: 4px;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+}
+
+.flower-desc {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.75em;
+    line-height: 1.4;
+    font-style: italic;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.selected-count {
+    color: #fff;
+    font-size: 0.85em;
+    margin-bottom: 12px;
+    min-height: 20px;
+    font-weight: 600;
+    text-shadow: 0 1px 10px rgba(255, 255, 255, 0.3);
+}
+
+.confirm-btn {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: #fff;
+    border: none;
+    padding: 14px 42px;
+    border-radius: 30px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+    transform: translateY(15px);
+    pointer-events: none;
+    box-shadow: 0 6px 28px rgba(240, 147, 251, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.confirm-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transition: left 0.5s;
+}
+
+.confirm-btn:hover::before {
+    left: 100%;
+}
+
+.confirm-btn.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.confirm-btn:hover {
+    transform: translateY(-4px) scale(1.08);
+    box-shadow: 0 12px 40px rgba(240, 147, 251, 0.5);
+}
+
+.confirm-btn:active {
+    transform: translateY(0) scale(0.97);
+}
+
+.effect-scene {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 200;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.effect-scene.active {
+    display: block;
+}
+
+.effect-scene::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 107, 157, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(168, 105, 255, 0.25) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(255, 183, 77, 0.25) 0%, transparent 50%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.effect-bg-img {
+    position: absolute;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.gallery-orbit {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.orbit-item {
+    position: absolute;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 30px rgba(233, 30, 99, 0.1);
+    opacity: 0;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: orbitPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+               orbitFloat 3s ease-in-out infinite;
+}
+
+.orbit-item:hover {
+    transform: scale(1.4) !important;
+    z-index: 20;
+    box-shadow: 0 12px 40px rgba(233, 30, 99, 0.35), 0 0 50px rgba(233, 30, 99, 0.2);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.orbit-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+@keyframes orbitPop {
+    0% { opacity: 0; transform: scale(0) rotate(-90deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes orbitFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.lightbox-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    animation: lbFadeIn 0.3s ease forwards;
+}
+
+@keyframes lbFadeIn {
+    to { opacity: 1; }
+}
+
+.lightbox-img {
+    max-width: 85vw;
+    max-height: 80vh;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: lbZoomIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    object-fit: contain;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+@keyframes lbZoomIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.effect-title-area {
+    position: absolute;
+    top: 3%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 11;
+    pointer-events: none;
+    width: 320px;
+}
+
+.effect-title-area h2 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.6em;
+    color: #fff;
+    text-shadow: 0 2px 20px rgba(255, 255, 255, 0.4), 0 4px 40px rgba(102, 126, 234, 0.5);
+    opacity: 0;
+    animation: titleFadeIn 1s ease forwards;
+    animation-delay: 1.5s;
+    margin-bottom: 8px;
+}
+
+.effect-title-area p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85em;
+    opacity: 0;
+    animation: titleFadeIn 1s ease forwards;
+    animation-delay: 1.8s;
+}
+
+@keyframes titleFadeIn {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.rose-petal {
+    position: absolute;
+    opacity: 0;
+    animation: petalFall linear forwards;
+}
+
+.rose-petal-inner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ff6b81, #e74c3c, #c0392b);
+    border-radius: 80% 0 55% 50% / 55% 0 80% 50%;
+    box-shadow: inset -2px -2px 6px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes petalFall {
+    0% { opacity: 0; transform: translateY(-80px) rotate(0deg) scale(0.6); }
+    15% { opacity: 0.9; }
+    100% { opacity: 0; transform: translateY(110vh) rotate(800deg) scale(0.2); }
+}
+
+.lotus-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid rgba(171, 71, 188, 0.35);
+    opacity: 0;
+    animation: ringExpand 2.5s ease-out infinite;
+}
+
+@keyframes ringExpand {
+    0% { width: 0; height: 0; opacity: 0.6; }
+    100% { width: 400px; height: 400px; opacity: 0; }
+}
+
+.lotus-star {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: #ab47bc;
+    border-radius: 50%;
+    opacity: 0;
+    animation: starTwinkle ease-in-out infinite;
+    box-shadow: 0 0 8px #ce93d8;
+}
+
+@keyframes starTwinkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1.3); }
+}
+
+.flower-center {
+    position: absolute;
+    top: 38%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10;
+}
+
+@keyframes flowerAppear {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.big-flower-img {
+    width: min(250px, 45vw);
+    height: min(250px, 45vw);
+    border-radius: 50%;
+    object-fit: cover;
+    animation: flowerAppear 0.8s ease forwards;
+    filter: drop-shadow(0 8px 40px rgba(233, 30, 99, 0.4));
+    background: rgba(255, 255, 255, 0.1);
+    border: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+.rose-center .big-flower-img {
+    animation: flowerAppear 0.8s ease forwards,
+               roseGlow 2.5s ease-in-out 0.8s infinite alternate;
+}
+
+.lotus-center .big-flower-img {
+    animation: flowerAppear 0.8s ease forwards,
+               lotusGlow 2.5s ease-in-out 0.8s infinite alternate;
+}
+
+@keyframes lotusGlow {
+    from {
+        filter: drop-shadow(0 4px 20px rgba(233, 30, 99, 0.3));
+        transform: scale(1);
+    }
+    to {
+        filter: drop-shadow(0 4px 40px rgba(233, 30, 99, 0.55));
+        transform: scale(1.06);
+    }
+}
+
+@keyframes roseGlow {
+    from {
+        filter: drop-shadow(0 4px 20px rgba(231, 76, 60, 0.35));
+        transform: scale(1);
+    }
+    to {
+        filter: drop-shadow(0 4px 40px rgba(231, 76, 60, 0.6));
+        transform: scale(1.06);
+    }
+}
+
+@keyframes lotusDrift {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+    50% { transform: translate(-50%, -50%) translateY(-10px); }
+}
+
+.mix-center {
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.mix-flower-img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    animation: mixFlowerPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+    filter: drop-shadow(0 4px 20px rgba(233, 30, 99, 0.25));
+    background: #fce4ec;
+}
+
+@keyframes mixFlowerPop {
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.mix-label {
+    width: 100%;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.7em;
+    color: #c2185b;
+    margin-top: 12px;
+    text-shadow: 0 2px 15px rgba(194, 24, 91, 0.2);
+    animation: mixFlowerPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.note-wrap {
+    position: absolute;
+    top: 3%;
+    left: 3%;
+    bottom: auto;
+    right: auto;
+    transform: none;
+    z-index: 100;
+    opacity: 0;
+    animation: noteSlideLeft 1s ease forwards;
+    animation-delay: 2.5s;
+}
+
+@keyframes noteSlideLeft {
+    0% { opacity: 0; transform: translateX(-40px) scale(0.9); }
+    100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+.note-card {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 12px 18px;
+    max-width: 260px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.note-to {
+    font-family: 'Dancing Script', cursive;
+    font-size: 0.95em;
+    color: #fff;
+    margin-bottom: 2px;
+    text-shadow: 0 1px 8px rgba(255, 255, 255, 0.3);
+}
+
+.note-msg {
+    font-size: 0.75em;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.4;
+}
+
+.note-msg .hl {
+    color: #f8bbd0;
+    font-weight: 700;
+}
+
+.note-meaning {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.2);
+    font-size: 0.7em;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.4;
+    text-align: left;
+}
+
+.meaning-item {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed rgba(194, 24, 91, 0.1);
+}
+
+.meaning-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.meaning-item strong {
+    color: #f8bbd0;
+}
+
+.note-meaning strong {
+    color: #f8bbd0;
+}
+
+.note-sig {
+    margin-top: 4px;
+    font-family: 'Dancing Script', cursive;
+    font-size: 0.8em;
+    color: #f8bbd0;
+}
+
+.back-btn {
+    position: fixed;
+    top: 22px;
+    left: 22px;
+    z-index: 300;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.88em;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+}
+
+.cursor-dot {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: dotFade 0.5s ease-out forwards;
+}
+
+@keyframes dotFade {
+    0% { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0); }
+}
+
+.float-heart {
+    position: absolute;
+    font-size: 1.3em;
+    opacity: 0;
+    z-index: 15;
+    animation: floatUp 3.5s ease-out forwards;
+}
+
+@keyframes floatUp {
+    0% { opacity: 0; transform: translateY(0) scale(0.5) rotate(-10deg); }
+    15% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-250px) scale(1.1) rotate(15deg); }
+}
+
+.real-petal-img {
+    position: absolute;
+    top: -120px;
+    opacity: 0;
+    pointer-events: none;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+    animation: realPetalFall linear forwards;
+}
+
+@keyframes realPetalFall {
+    0% { opacity: 0; transform: translateY(0) rotate(0deg) scale(0.5); }
+    10% { opacity: 0.85; }
+    90% { opacity: 0.7; }
+    100% { opacity: 0; transform: translateY(110vh) rotate(600deg) scale(0.3); }
+}
+
+.real-float-img {
+    position: absolute;
+    bottom: -100px;
+    opacity: 0;
+    pointer-events: none;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.18));
+    animation: realFloatUp ease-out forwards;
+}
+
+@keyframes realFloatUp {
+    0% { opacity: 0; transform: translateY(0) scale(0.4) rotate(-10deg); }
+    15% { opacity: 0.85; }
+    85% { opacity: 0.75; }
+    100% { opacity: 0; transform: translateY(-115vh) scale(0.7) rotate(15deg); }
+}
+
+.lotus-petal {
+    position: absolute;
+    opacity: 0;
+    animation: lotusPetalDrift linear forwards;
+}
+
+.lotus-petal-inner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f8bbd0, #e1bee7, #ce93d8);
+    border-radius: 60% 40% 70% 30% / 50% 60% 40% 50%;
+    box-shadow: inset -2px -2px 6px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes lotusPetalDrift {
+    0% { opacity: 0; transform: translateY(60px) rotate(0deg) scale(0.3); }
+    15% { opacity: 0.8; }
+    90% { opacity: 0.6; }
+    100% { opacity: 0; transform: translateY(-110vh) rotate(500deg) scale(0.2); }
+}
+
+.choice-badge {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 55;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 25px;
+    padding: 8px 24px;
+    font-size: 0.85em;
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    animation: badgeSlide 0.8s ease forwards;
+}
+
+@keyframes badgeSlide {
+    0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.choice-badge strong {
+    color: #f8bbd0;
+}
+</style>
+</head>
+<body>
+<div class="bg-petals" id="bgPetals"></div>
+
+<div class="gift-scene" id="giftScene">
+    <div class="gift-title">Tặng Tuyền Nè</div>
+    <div class="gift-wrapper" id="giftBox" onclick="openGift()">
+        <div class="gift-shadow"></div>
+        <div class="box-body">
+            <div class="ribbon-v"></div>
+            <div class="ribbon-h"></div>
+        </div>
+        <div class="box-lid">
+            <div class="ribbon-v-lid"></div>
+        </div>
+        <div class="bow">
+            <div class="bow-loop-l"></div>
+            <div class="bow-loop-r"></div>
+            <div class="bow-knot"></div>
+            <div class="bow-tail-l"></div>
+            <div class="bow-tail-r"></div>
+        </div>
+    </div>
+    <div class="gift-hint" id="giftHint">Nhấn vào hộp quà nha Tuyền</div>
+</div>
+
+<div class="flower-selection" id="flowerSelection">
+    <div class="selection-title">Chọn hoa nha Tuyền</div>
+    <div class="selection-subtitle">Chọn 1 hoặc nhiều loại, rồi nhấn "Xem hiệu ứng"</div>
+    <div class="flower-grid" id="flowerGrid">
+        <div class="flower-card" data-type="rose" onclick="toggleFlower(this)">
+            <img class="flower-card-img" src="images/pic_4.jpg" alt="Hoa Hong"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+            <span class="flower-emoji" style="display:none">🌹</span>
+            <div class="flower-name">Hoa Hồng</div>
+            <div class="flower-desc">Tình yêu mãnh liệt, lãng mạn</div>
+        </div>
+        <div class="flower-card" data-type="lotus" onclick="toggleFlower(this)">
+            <img class="flower-card-img" src="images/pic_10.jpg" alt="Hoa Sen"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+            <span class="flower-emoji" style="display:none">🪷</span>
+            <div class="flower-name">Hoa Sen</div>
+            <div class="flower-desc">Thuần khiết, thanh cao, sức sống mãnh liệt</div>
+        </div>
+    </div>
+    <div class="selected-count" id="selectedCount"></div>
+    <button class="confirm-btn" id="confirmBtn" onclick="confirmSelection()">Xem hiệu ứng ✨</button>
+</div>
+
+<button class="back-btn" id="backBtn" onclick="goBack()">← Chọn lại</button>
+
+<div class="effect-scene" id="effectScene"></div>
+
+<script>
+const bgPetalsEl = document.getElementById('bgPetals');
+const petalEmojis = ['🌸', '🌺', '🏵️', '💮', '🪷', '🌷', '🍃', '✨', '⭐', '💖'];
+
+for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'bg-petal';
+    p.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (8 + Math.random() * 12) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    p.style.fontSize = (1.2 + Math.random() * 1.2) + 'em';
+    bgPetalsEl.appendChild(p);
+}
+
+document.addEventListener('mousemove', e => {
+    if (Math.random() > 0.65) {
+        const d = document.createElement('div');
+        d.className = 'cursor-dot';
+        d.style.background = ['#e91e63', '#f48fb1', '#ce93d8', '#80cbc4', '#ffb74d'][Math.floor(Math.random() * 5)];
+        d.style.left = e.clientX + 'px';
+        d.style.top = e.clientY + 'px';
+        document.body.appendChild(d);
+        setTimeout(() => d.remove(), 500);
+    }
+});
+
+const box = document.getElementById('giftBox');
+for (let i = 0; i < 8; i++) {
+    const s = document.createElement('div');
+    s.className = 'box-sparkle';
+    s.style.left = (10 + Math.random() * 80) + '%';
+    s.style.top = (10 + Math.random() * 80) + '%';
+    s.style.animationDelay = (Math.random() * 2) + 's';
+    s.style.animationDuration = (1 + Math.random() * 1.5) + 's';
+    box.appendChild(s);
+}
+
+function openGift() {
+    const b = document.getElementById('giftBox');
+    if (b.classList.contains('opened')) return;
+    b.classList.add('opened');
+    document.getElementById('giftHint').style.display = 'none';
+
+    const emojis = ['🌸', '✨', '💫', '⭐', '🌺', '💝', '🎀', '🌟', '🦋', '💖'];
+    const rect = b.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 3;
+
+    for (let i = 0; i < 22; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        p.style.fontSize = (14 + Math.random() * 12) + 'px';
+        p.style.left = cx + 'px';
+        p.style.top = cy + 'px';
+        const angle = (Math.PI * 2 / 22) * i + Math.random() * 0.5;
+        const dist = 70 + Math.random() * 100;
+        p.style.setProperty('--px', Math.cos(angle) * dist + 'px');
+        p.style.setProperty('--py', Math.sin(angle) * dist - 50 + 'px');
+        p.style.animationDelay = (Math.random() * 0.3) + 's';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 1500);
+    }
+
+    setTimeout(() => {
+        document.getElementById('giftScene').style.display = 'none';
+        document.getElementById('flowerSelection').classList.add('active');
+    }, 1200);
+}
+
+let selectedFlowers = new Set();
+
+function toggleFlower(card) {
+    const type = card.dataset.type;
+    if (selectedFlowers.has(type)) {
+        selectedFlowers.delete(type);
+        card.classList.remove('selected');
+    } else {
+        selectedFlowers.add(type);
+        card.classList.add('selected');
+    }
+    updateUI();
+}
+
+function updateUI() {
+    const count = selectedFlowers.size;
+    const countEl = document.getElementById('selectedCount');
+    const btn = document.getElementById('confirmBtn');
+    if (count === 0) {
+        countEl.textContent = '';
+        btn.classList.remove('show');
+    } else {
+        countEl.textContent = 'Đã chọn ' + count + ' loại hoa';
+        btn.classList.add('show');
+    }
+}
+
+const flowerImages = {
+    rose: 'images/pic_14.jpg',
+    lotus: 'images/pic_15.jpg'
+};
+
+const flowerEmojis = { rose: '🌹', lotus: '🪷' };
+
+const flowerMeanings = {
+    rose: {
+        name: 'Hoa Hồng',
+        meaning: 'Tình yêu mãnh liệt, sự đam mê và lãng mạn. Tặng hoa hồng là nói lời yêu thương từ tận trái tim.'
+    },
+    lotus: {
+        name: 'Hoa Sen',
+        meaning: 'Sự thuần khiết, thanh cao và sức sống mãnh liệt. Hoa sen mọc từ bùn mà không nhiễm bùn, tượng trưng cho tâm hồn trong sáng.'
+    }
+};
+
+const roseImgPool = [
+    'images/pic_14.jpg',
+    'images/pic_4.jpg',
+    'images/pic_1.jpg',
+    'images/pic_5.jpg',
+    'images/pic_6.jpg',
+    'images/pic_7.jpg',
+    'images/pic_8.jpg',
+    'images/pic_16.jpg'
+];
+
+const lotusImgPool = [
+    'images/pic_10.jpg',
+    'images/pic_11.jpg',
+    'images/pic_12.jpg',
+    'images/pic_16.jpg',
+    'images/pic_15.jpg',
+    'images/pic_8.jpg',
+    'images/pic_7.jpg',
+    'images/pic_1.jpg',
+    'images/pic_3.jpg',
+    'images/pic_2.png'
+];
+
+const roseBgImages = [
+    'images/pic_4.jpg',
+    'images/pic_1.jpg',
+    'images/pic_5.jpg',
+    'images/pic_6.jpg',
+    'images/pic_7.jpg',
+    'images/pic_8.jpg',
+    'images/pic_16.jpg'
+];
+
+const lotusBgImages = [
+    'images/pic_10.jpg',
+    'images/pic_12.jpg',
+    'images/pic_2.png'
+];
+
+function addBgImages(scene, types) {
+    const bgPositions = [
+        { top: '-5%', left: '-8%', width: '320px', height: '480px' },
+        { top: '15%', right: '-10%', width: '280px', height: '420px' },
+        { bottom: '10%', left: '-5%', width: '300px', height: '450px' },
+        { bottom: '-8%', right: '-6%', width: '260px', height: '390px' },
+        { top: '40%', left: '5%', width: '240px', height: '360px' },
+        { top: '5%', right: '10%', width: '220px', height: '330px' }
+    ];
+
+    let bgPool = [];
+    if (types.includes('rose')) bgPool = bgPool.concat(roseBgImages);
+    if (types.includes('lotus')) bgPool = bgPool.concat(lotusBgImages);
+    if (bgPool.length === 0) return;
+
+    bgPositions.forEach((pos, i) => {
+        const img = document.createElement('img');
+        img.className = 'effect-bg-img';
+        img.src = bgPool[i % bgPool.length];
+        img.alt = '';
+        if (pos.top !== undefined) img.style.top = pos.top;
+        if (pos.bottom !== undefined) img.style.bottom = pos.bottom;
+        if (pos.left !== undefined) img.style.left = pos.left;
+        if (pos.right !== undefined) img.style.right = pos.right;
+        img.style.width = pos.width;
+        img.style.height = pos.height;
+        img.style.opacity = '0.12';
+        img.style.filter = 'blur(3px)';
+        scene.appendChild(img);
+    });
+}
+
+function buildOrbitItems(scene, pool, count, cx, cy, radius) {
+    const orbit = document.createElement('div');
+    orbit.className = 'gallery-orbit';
+    const size = Math.min(75, Math.min(window.innerWidth, window.innerHeight) * 0.1);
+    const maxRadius = Math.min(window.innerWidth, window.innerHeight) * 0.35;
+    radius = Math.min(radius, maxRadius);
+
+    for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 / count) * i - Math.PI / 2;
+        const x = cx + Math.cos(angle) * radius - size / 2;
+        const y = cy + Math.sin(angle) * radius - size / 2;
+
+        const item = document.createElement('div');
+        item.className = 'orbit-item';
+        item.style.width = size + 'px';
+        item.style.height = size + 'px';
+        item.style.left = x + 'px';
+        item.style.top = y + 'px';
+        item.style.animationDelay = (0.3 + i * 0.12) + 's, ' + (0.8 + i * 0.12) + 's';
+
+        const src = pool[i % pool.length];
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = '';
+        img.onerror = function() { item.style.display = 'none'; };
+        item.appendChild(img);
+        item.addEventListener('click', function() { openLightbox(src); });
+        orbit.appendChild(item);
+    }
+
+    scene.appendChild(orbit);
+}
+
+function openLightbox(src) {
+    const existing = document.querySelector('.lightbox-overlay');
+    if (existing) existing.remove();
+    const overlay = document.createElement('div');
+    overlay.className = 'lightbox-overlay';
+    overlay.addEventListener('click', function() { overlay.remove(); });
+    const img = document.createElement('img');
+    img.className = 'lightbox-img';
+    img.src = src;
+    img.onerror = function() { overlay.remove(); };
+    overlay.appendChild(img);
+    document.body.appendChild(overlay);
+}
+
+function buildNoteHTML(types) {
+    let meaningHTML = '';
+    if (types.length === 1) {
+        const f = flowerMeanings[types[0]];
+        meaningHTML = '<div class="note-meaning">' + flowerEmojis[types[0]] + ' <strong>' + f.name + ':</strong> ' + f.meaning + '</div>';
+    } else {
+        meaningHTML = '<div class="note-meaning">';
+        types.forEach(t => {
+            const f = flowerMeanings[t];
+            meaningHTML += '<div class="meaning-item">' + flowerEmojis[t] + ' <strong>' + f.name + ':</strong> ' + f.meaning + '</div>';
+        });
+        meaningHTML += '</div>';
+    }
+
+    return '<div class="note-card">' +
+        '<div class="note-to">Tặng m đó</div>' +
+        '<div class="note-msg">Tuyền ơi, t có lòng tặng đó nha!<br>Mong Tuyền luôn <span class="hl">vui vẻ</span> và <span class="hl">hạnh phúc</span> nè~</div>' +
+        meaningHTML +
+        '<div class="note-sig">— Minh Hiếu ❤️</div>' +
+        '</div>';
+}
+
+function buildSingleEffect(type, scene) {
+    buildParticles(type, scene);
+
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight * 0.38;
+    const pool = type === 'rose' ? roseImgPool : lotusImgPool;
+    const radius = Math.min(window.innerWidth, window.innerHeight) * 0.32;
+
+    buildOrbitItems(scene, pool, pool.length, cx, cy, radius);
+
+    const center = document.createElement('div');
+    center.className = type + '-center flower-center';
+    const img = document.createElement('img');
+    img.className = 'big-flower-img';
+    img.src = flowerImages[type];
+    img.alt = flowerMeanings[type].name;
+    img.onerror = function() {
+        this.style.display = 'none';
+        const em = document.createElement('div');
+        em.style.fontSize = '6.5em';
+        em.textContent = flowerEmojis[type];
+        center.appendChild(em);
+    };
+    center.appendChild(img);
+    scene.appendChild(center);
+
+    const titleArea = document.createElement('div');
+    titleArea.className = 'effect-title-area';
+    titleArea.innerHTML = '<h2>' + flowerMeanings[type].name + ' Đẹp</h2><p>' + pool.length + ' ảnh đẹp dành cho Tuyền</p>';
+    scene.appendChild(titleArea);
+}
+
+function buildMixEffect(types, scene) {
+    types.forEach(t => buildParticles(t, scene, 0.5));
+
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight * 0.35;
+    const allPool = [...roseImgPool, ...lotusImgPool];
+    const radius = Math.min(window.innerWidth, window.innerHeight) * 0.34;
+
+    buildOrbitItems(scene, allPool, allPool.length, cx, cy, radius);
+
+    const center = document.createElement('div');
+    center.className = 'mix-center';
+    types.forEach((t, i) => {
+        const img = document.createElement('img');
+        img.className = 'mix-flower-img';
+        img.src = flowerImages[t];
+        img.alt = flowerMeanings[t].name;
+        img.style.animationDelay = (i * 0.15) + 's';
+        img.onerror = function() {
+            this.style.display = 'none';
+            const span = document.createElement('span');
+            span.textContent = flowerEmojis[t];
+            span.style.fontSize = '4em';
+            center.appendChild(span);
+        };
+        center.appendChild(img);
+    });
+
+    const label = document.createElement('div');
+    label.className = 'mix-label';
+    label.textContent = '— Hoa Mix Đặc Biệt —';
+    label.style.animationDelay = (types.length * 0.15 + 0.3) + 's';
+    center.appendChild(label);
+    scene.appendChild(center);
+
+    const titleArea = document.createElement('div');
+    titleArea.className = 'effect-title-area';
+    const total = allPool.length;
+    titleArea.innerHTML = '<h2>Hoa Mix Đẹp</h2><p>' + total + ' ảnh đẹp dành cho Tuyền</p>';
+    scene.appendChild(titleArea);
+}
+
+function buildParticles(type, scene, m) {
+    if (m === undefined) m = 1;
+
+    if (type === 'rose') {
+        for (let i = 0; i < Math.round(40 * m); i++) {
+            const p = document.createElement('div');
+            p.className = 'rose-petal';
+            const size = 14 + Math.random() * 16;
+            p.style.width = size + 'px';
+            p.style.height = size * 1.2 + 'px';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (3 + Math.random() * 5) + 's';
+            p.style.animationDelay = (Math.random() * 4) + 's';
+            const inner = document.createElement('div');
+            inner.className = 'rose-petal-inner';
+            inner.style.filter = 'hue-rotate(' + (-5 + Math.random() * 15) + 'deg)';
+            p.appendChild(inner);
+            scene.appendChild(p);
+        }
+
+        for (let i = 0; i < Math.round(15 * m); i++) {
+            const img = document.createElement('img');
+            img.className = 'real-petal-img';
+            img.src = roseImgPool[Math.floor(Math.random() * roseImgPool.length)];
+            img.alt = '';
+            const size = 50 + Math.random() * 70;
+            img.style.width = size + 'px';
+            img.style.height = size + 'px';
+            img.style.left = Math.random() * 100 + '%';
+            img.style.borderRadius = '50%';
+            img.style.animationDuration = (4 + Math.random() * 6) + 's';
+            img.style.animationDelay = (Math.random() * 5) + 's';
+            img.onerror = function() { this.style.display = 'none'; };
+            scene.appendChild(img);
+        }
+    } else if (type === 'lotus') {
+        for (let i = 0; i < Math.round(12 * m); i++) {
+            const ring = document.createElement('div');
+            ring.className = 'lotus-ring';
+            ring.style.animationDelay = (i * 0.35) + 's';
+            scene.appendChild(ring);
+        }
+
+        for (let i = 0; i < Math.round(40 * m); i++) {
+            const s = document.createElement('div');
+            s.className = 'lotus-star';
+            s.style.left = Math.random() * 100 + '%';
+            s.style.top = Math.random() * 100 + '%';
+            s.style.animationDelay = (Math.random() * 4) + 's';
+            s.style.animationDuration = (1.2 + Math.random() * 2) + 's';
+            const starSize = 4 + Math.random() * 6;
+            s.style.width = starSize + 'px';
+            s.style.height = starSize + 'px';
+            scene.appendChild(s);
+        }
+
+        for (let i = 0; i < Math.round(25 * m); i++) {
+            const p = document.createElement('div');
+            p.className = 'lotus-petal';
+            const size = 16 + Math.random() * 18;
+            p.style.width = size + 'px';
+            p.style.height = size * 0.8 + 'px';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = (4 + Math.random() * 5) + 's';
+            p.style.animationDelay = (Math.random() * 4) + 's';
+            const inner = document.createElement('div');
+            inner.className = 'lotus-petal-inner';
+            inner.style.filter = 'hue-rotate(' + (-10 + Math.random() * 20) + 'deg)';
+            p.appendChild(inner);
+            scene.appendChild(p);
+        }
+
+        for (let i = 0; i < Math.round(12 * m); i++) {
+            const img = document.createElement('img');
+            img.className = 'real-float-img';
+            img.src = lotusImgPool[Math.floor(Math.random() * lotusImgPool.length)];
+            img.alt = '';
+            const size = 45 + Math.random() * 55;
+            img.style.width = size + 'px';
+            img.style.height = size + 'px';
+            img.style.left = Math.random() * 100 + '%';
+            img.style.borderRadius = '50%';
+            img.style.animationDuration = (5 + Math.random() * 7) + 's';
+            img.style.animationDelay = (Math.random() * 5) + 's';
+            img.onerror = function() { this.style.display = 'none'; };
+            scene.appendChild(img);
+        }
+    }
+}
+
+function confirmSelection() {
+    if (selectedFlowers.size === 0) return;
+    const scene = document.getElementById('effectScene');
+    scene.innerHTML = '';
+    scene.className = 'effect-scene active';
+    document.getElementById('flowerSelection').classList.remove('active');
+    document.getElementById('backBtn').style.display = 'block';
+
+    addBgImages(scene, [...selectedFlowers]);
+
+    for (let i = 0; i < 14; i++) {
+        const h = document.createElement('div');
+        h.className = 'float-heart';
+        h.textContent = ['❤️', '💖', '💗', '💕', '💝', '🤍', '💜', '💙'][Math.floor(Math.random() * 8)];
+        h.style.left = Math.random() * 100 + '%';
+        h.style.bottom = '3%';
+        h.style.animationDelay = (Math.random() * 5) + 's';
+        h.style.fontSize = (1 + Math.random() * 1.2) + 'em';
+        scene.appendChild(h);
+    }
+
+    const types = [...selectedFlowers];
+    if (types.length === 1) buildSingleEffect(types[0], scene);
+    else buildMixEffect(types, scene);
+
+    const note = document.createElement('div');
+    note.className = 'note-wrap';
+    note.innerHTML = buildNoteHTML(types);
+    scene.appendChild(note);
+
+    saveSelection(types);
+}
+
+function saveSelection(types) {
+    const data = {
+        flowers: types,
+        time: new Date().toLocaleString('vi-VN'),
+        id: Math.random().toString(36).substr(2, 6).toUpperCase()
+    };
+    localStorage.setItem('tuyen_gift_selection', JSON.stringify(data));
+    let history = JSON.parse(localStorage.getItem('tuyen_gift_history') || '[]');
+    history.push(data);
+    localStorage.setItem('tuyen_gift_history', JSON.stringify(history));
+}
+
+function checkUrlParams() {
+    const params = new URLSearchParams(location.search);
+    const choice = params.get('choice');
+    if (choice) {
+        const types = choice.split(',');
+        setTimeout(() => {
+            document.getElementById('giftBox').classList.add('opened');
+            document.getElementById('giftHint').style.display = 'none';
+            setTimeout(() => {
+                document.getElementById('giftScene').style.display = 'none';
+                document.getElementById('backBtn').style.display = 'block';
+                const scene = document.getElementById('effectScene');
+                scene.innerHTML = '';
+                scene.className = 'effect-scene active';
+
+                addBgImages(scene, types);
+
+                for (let i = 0; i < 14; i++) {
+                    const h = document.createElement('div');
+                    h.className = 'float-heart';
+                    h.textContent = ['❤️', '💖', '💗', '💕', '💝', '🤍', '💜', '💙'][Math.floor(Math.random() * 8)];
+                    h.style.left = Math.random() * 100 + '%';
+                    h.style.bottom = '3%';
+                    h.style.animationDelay = (Math.random() * 5) + 's';
+                    h.style.fontSize = (1 + Math.random() * 1.2) + 'em';
+                    scene.appendChild(h);
+                }
+
+                if (types.length === 1) buildSingleEffect(types[0], scene);
+                else buildMixEffect(types, scene);
+
+                const note = document.createElement('div');
+                note.className = 'note-wrap';
+                note.innerHTML = buildNoteHTML(types);
+                scene.appendChild(note);
+
+                const chosenNames = types.map(t => flowerMeanings[t].name).join(', ');
+                const badge = document.createElement('div');
+                badge.className = 'choice-badge';
+                badge.innerHTML = 'Tuyền đã chọn: <strong>' + chosenNames + '</strong>';
+                scene.appendChild(badge);
+            }, 1300);
+        }, 500);
+    }
+}
+
+checkUrlParams();
+
+function goBack() {
+    const scene = document.getElementById('effectScene');
+    scene.classList.remove('active');
+    scene.innerHTML = '';
+    document.getElementById('backBtn').style.display = 'none';
+    document.getElementById('giftScene').style.display = 'block';
+    const b = document.getElementById('giftBox');
+    b.classList.remove('opened');
+    document.getElementById('giftHint').style.display = 'block';
+    selectedFlowers.clear();
+    document.querySelectorAll('.flower-card').forEach(c => c.classList.remove('selected'));
+    updateUI();
+}
+</script>
+</body>
+</html>
