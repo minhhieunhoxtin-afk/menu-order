@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mời Mày Chọn Món Tao Mua Cho Ăn</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--pink:#ff6b9d;--purple:#764ba2;--blue:#667eea;--green:#2ecc71;--orange:#f39c12;
+--gradient:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+--glass:rgba(255,255,255,0.12);--glass-border:rgba(255,255,255,0.25);
+}
+body{font-family:'Quicksand',sans-serif;min-height:100vh;background:var(--gradient);color:#fff;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 50%,rgba(255,107,157,0.3),transparent 50%),radial-gradient(circle at 80% 20%,rgba(168,105,255,0.25),transparent 50%),radial-gradient(circle at 50% 80%,rgba(255,183,77,0.2),transparent 50%);z-index:0;pointer-events:none}
+
+/* ============ SPLASH SCREEN ============ */
+.splash{position:fixed;inset:0;z-index:9999;background:var(--gradient);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.6s,transform 0.6s}
+.splash.hide{opacity:0;transform:scale(1.1);pointer-events:none}
+.splash::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(255,107,157,0.25),transparent 50%),radial-gradient(circle at 70% 60%,rgba(168,105,255,0.2),transparent 50%);pointer-events:none}
+.splash-content{position:relative;z-index:1;text-align:center;padding:20px}
+.splash-emoji{font-size:5em;margin-bottom:16px;animation:dropIn 0.8s cubic-bezier(0.175,0.885,0.32,1.275)}
+@keyframes dropIn{0%{transform:translateY(-80px) scale(0);opacity:0}60%{transform:translateY(10px) scale(1.1)}100%{transform:translateY(0) scale(1);opacity:1}}
+.splash-title{font-family:'Dancing Script',cursive;font-size:2.4em;background:linear-gradient(135deg,#fff,#f8bbd0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;line-height:1.2}
+.splash-subtitle{color:rgba(255,255,255,0.8);font-size:0.95em;margin-bottom:30px}
+.splash-qr{background:#fff;padding:20px;border-radius:20px;margin-bottom:16px;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:floatUp 0.8s ease 0.3s both}
+@keyframes floatUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.splash-qr canvas,.splash-qr img{display:block;margin:0 auto}
+.splash-hint{color:rgba(255,255,255,0.7);font-size:0.85em;margin-bottom:24px;animation:floatUp 0.8s ease 0.5s both}
+.splash-enter-btn{background:linear-gradient(135deg,var(--pink),var(--purple));border:none;color:#fff;padding:16px 48px;border-radius:30px;font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.1em;cursor:pointer;transition:all 0.3s;box-shadow:0 8px 30px rgba(255,107,157,0.4);animation:floatUp 0.8s ease 0.7s both}
+.splash-enter-btn:hover{transform:translateY(-4px) scale(1.05);box-shadow:0 14px 40px rgba(255,107,157,0.5)}
+.splash-enter-btn:active{transform:scale(0.96)}
+.splash-or{color:rgba(255,255,255,0.5);font-size:0.8em;margin:16px 0;animation:floatUp 0.8s ease 0.6s both}
+.splash-scan-hint{font-size:0.85em;color:rgba(255,255,255,0.6);animation:floatUp 0.8s ease 0.8s both}
+.splash-scan-hint span{color:#f8bbd0;font-weight:700}
+
+/* Floating decorative items on splash */
+.splash-deco{position:absolute;font-size:2em;opacity:0.25;animation:decoFloat 6s ease-in-out infinite}
+@keyframes decoFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-20px) rotate(10deg)}}
+
+/* ============ MAIN APP ============ */
+.app{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:16px;padding-bottom:130px;display:none}
+.app.show{display:block}
+
+/* Header */
+.header{text-align:center;padding:20px 0 16px}
+.header h1{font-family:'Dancing Script',cursive;font-size:2em;background:linear-gradient(135deg,#fff,#f8bbd0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.3}
+.header p{color:rgba(255,255,255,0.8);font-size:0.85em;margin-top:6px}
+
+/* Main Tabs (Nước / Đồ Ăn / Combo) */
+.main-tabs{display:flex;gap:6px;margin:12px 0;justify-content:center}
+.main-tab{padding:10px 22px;border-radius:25px;border:1px solid var(--glass-border);background:var(--glass);backdrop-filter:blur(20px);cursor:pointer;font-weight:600;font-size:0.85em;transition:all 0.3s;color:#fff}
+.main-tab.active{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;transform:scale(1.05);box-shadow:0 4px 20px rgba(255,107,157,0.4)}
+.main-tab:hover:not(.active){background:rgba(255,255,255,0.2)}
+
+/* Sub Tabs (for drinks) */
+.sub-tabs{display:flex;gap:6px;margin:12px 0 8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.sub-tabs::-webkit-scrollbar{display:none}
+.sub-tab{padding:8px 16px;border-radius:20px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.08);cursor:pointer;font-weight:600;font-size:0.78em;transition:all 0.3s;color:rgba(255,255,255,0.7);white-space:nowrap;flex-shrink:0}
+.sub-tab.active{background:rgba(255,255,255,0.2);color:#fff;border-color:rgba(255,255,255,0.4)}
+.sub-tab:hover:not(.active){background:rgba(255,255,255,0.15)}
+.sub-tab .sub-emoji{margin-right:4px}
+
+/* Menu Items */
+.menu-grid{display:grid;gap:12px;margin-top:12px}
+.menu-item{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:18px;padding:14px;display:flex;align-items:center;gap:12px;transition:all 0.3s;cursor:pointer;position:relative;overflow:hidden}
+.menu-item::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.08),transparent);opacity:0;transition:opacity 0.3s}
+.menu-item:hover::before{opacity:1}
+.menu-item:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,0.2);border-color:rgba(255,255,255,0.35)}
+.menu-item:active{transform:scale(0.98)}
+.menu-emoji{font-size:2.2em;min-width:52px;text-align:center}
+.menu-info{flex:1}
+.menu-name{font-weight:700;font-size:0.9em;margin-bottom:2px}
+.menu-desc{font-size:0.72em;color:rgba(255,255,255,0.6);line-height:1.3}
+.menu-price{display:none}
+.menu-hot{position:absolute;top:8px;right:10px;background:linear-gradient(135deg,#ff6b6b,#ee5a24);padding:2px 10px;border-radius:12px;font-size:0.62em;font-weight:700;animation:hotPulse 2s infinite}
+@keyframes hotPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,107,0.4)}50%{box-shadow:0 0 0 8px rgba(255,107,107,0)}}
+.menu-new{position:absolute;top:8px;right:10px;background:linear-gradient(135deg,var(--green),#27ae60);padding:2px 10px;border-radius:12px;font-size:0.62em;font-weight:700}
+
+/* Quantity Controls */
+.qty-controls{display:flex;align-items:center;gap:8px;margin-top:6px}
+.qty-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--glass-border);background:var(--glass);color:#fff;font-size:1em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-weight:700}
+.qty-btn:hover{background:rgba(255,255,255,0.25);transform:scale(1.1)}
+.qty-btn:active{transform:scale(0.9)}
+.qty-value{font-weight:700;font-size:0.95em;min-width:18px;text-align:center}
+
+/* Cart Bar */
+.cart-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(15,15,35,0.95);backdrop-filter:blur(30px);border-top:1px solid var(--glass-border);padding:12px 16px;z-index:100;display:flex;align-items:center;justify-content:space-between}
+.cart-bar.has-items{border-top:2px solid var(--pink)}
+.cart-info{display:flex;align-items:center;gap:10px}
+.cart-icon{font-size:1.4em;position:relative}
+.cart-badge{position:absolute;top:-8px;right:-10px;background:linear-gradient(135deg,var(--pink),#ff6b6b);width:20px;height:20px;border-radius:50%;font-size:0.6em;display:flex;align-items:center;justify-content:center;font-weight:700;animation:badgePop 0.3s ease}
+@keyframes badgePop{0%{transform:scale(0)}100%{transform:scale(1)}}
+.cart-total{font-weight:700;font-size:0.9em}
+.cart-total span{color:#f8bbd0}
+.order-btn{background:linear-gradient(135deg,var(--pink),var(--purple));border:none;color:#fff;padding:11px 22px;border-radius:25px;font-weight:700;font-size:0.85em;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 20px rgba(255,107,157,0.4)}
+.order-btn:hover{transform:translateY(-2px)}
+.order-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+
+/* ============ ORDER MODAL ============ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.show{display:flex;animation:fadeIn 0.3s}
+.modal{background:linear-gradient(180deg,#1a1a2e,#16213e);width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:24px 18px 32px;max-height:85vh;overflow-y:auto;animation:slideUp 0.4s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.modal-title{font-family:'Dancing Script',cursive;font-size:1.5em}
+.modal-close{width:34px;height:34px;border-radius:50%;border:1px solid var(--glass-border);background:var(--glass);color:#fff;font-size:1.1em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.modal-close:hover{background:rgba(255,255,255,0.2);transform:rotate(90deg)}
+.order-list{margin-bottom:16px}
+.order-item{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.08)}
+.order-item:last-child{border-bottom:none}
+.order-item-left{display:flex;align-items:center;gap:10px}
+.order-item-qty{background:var(--pink);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75em}
+.order-item-name{font-weight:600;font-size:0.85em}
+
+/* Payment */
+.payment-section{margin-top:18px}
+.payment-title{font-weight:700;margin-bottom:10px;font-size:0.9em}
+.payment-methods{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.payment-method{padding:12px;border-radius:14px;border:2px solid var(--glass-border);background:var(--glass);cursor:pointer;text-align:center;transition:all 0.3s}
+.payment-method:hover{border-color:rgba(255,255,255,0.35)}
+.payment-method.selected{border-color:var(--pink);background:rgba(255,107,157,0.15);box-shadow:0 0 20px rgba(255,107,157,0.2)}
+.payment-method .pm-icon{font-size:1.6em;margin-bottom:2px}
+.payment-method .pm-name{font-weight:600;font-size:0.78em}
+
+.customer-section{margin-top:16px}
+.customer-input{width:100%;padding:12px 16px;border-radius:14px;border:2px solid var(--glass-border);background:var(--glass);color:#fff;font-family:'Quicksand',sans-serif;font-size:0.88em;outline:none;transition:border-color 0.3s}
+.customer-input:focus{border-color:var(--pink)}
+.customer-input::placeholder{color:rgba(255,255,255,0.4)}
+
+.confirm-order-btn{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-family:'Quicksand',sans-serif;font-weight:700;font-size:1em;cursor:pointer;margin-top:18px;transition:all 0.3s;box-shadow:0 6px 30px rgba(255,107,157,0.4)}
+.confirm-order-btn:hover{transform:translateY(-2px)}
+.confirm-order-btn:active{transform:scale(0.98)}
+
+/* ============ SUCCESS ============ */
+.success-screen{position:fixed;inset:0;background:var(--gradient);z-index:300;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:40px}
+.success-screen.show{display:flex;animation:fadeIn 0.5s}
+.success-icon{font-size:5em;margin-bottom:16px;animation:bounceIn 0.8s ease}
+@keyframes bounceIn{0%{transform:scale(0) rotate(-20deg)}50%{transform:scale(1.2) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
+.success-screen h2{font-family:'Dancing Script',cursive;font-size:1.8em;margin-bottom:10px}
+.success-screen p{color:rgba(255,255,255,0.8);margin-bottom:6px;font-size:0.88em}
+.success-order-id{background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;padding:10px 22px;margin:18px 0;font-weight:700;font-size:1.05em;letter-spacing:2px}
+.success-btn{background:linear-gradient(135deg,var(--pink),var(--purple));border:none;color:#fff;padding:12px 36px;border-radius:25px;font-weight:700;font-size:0.95em;cursor:pointer;margin-top:16px;transition:all 0.3s}
+.success-btn:hover{transform:scale(1.05)}
+
+/* Particles */
+.particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.particle{position:absolute;font-size:1.5em;opacity:0.25;animation:particleFloat linear infinite}
+@keyframes particleFloat{0%{transform:translateY(100vh) rotate(0deg);opacity:0}10%{opacity:0.25}90%{opacity:0.25}100%{transform:translateY(-100px) rotate(360deg);opacity:0}}
+
+@media(max-width:380px){
+.splash-title{font-size:1.8em}
+.header h1{font-size:1.6em}
+.menu-emoji{font-size:1.8em;min-width:44px}
+.menu-item{padding:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<!-- ============ SPLASH SCREEN ============ -->
+<div class="splash" id="splash">
+    <div class="splash-deco" style="top:10%;left:8%;animation-delay:0s">🍊</div>
+    <div class="splash-deco" style="top:20%;right:10%;animation-delay:1s">🧋</div>
+    <div class="splash-deco" style="bottom:25%;left:12%;animation-delay:2s">🍓</div>
+    <div class="splash-deco" style="bottom:15%;right:8%;animation-delay:0.5s">🍹</div>
+    <div class="splash-deco" style="top:45%;left:5%;animation-delay:1.5s">🥑</div>
+    <div class="splash-deco" style="top:50%;right:5%;animation-delay:2.5s">🍰</div>
+
+    <div class="splash-content">
+        <div class="splash-emoji">🍽️</div>
+        <div class="splash-title">Mời Mày Chọn Món<br>Tao Mua Cho Ăn</div>
+        <div class="splash-subtitle">Quét QR code bên dưới để mở menu nha!</div>
+
+        <div class="splash-qr">
+            <div id="splashQR"></div>
+        </div>
+
+        <div class="splash-hint">📱 Dùng camera điện thoại quét mã QR</div>
+
+        <div class="splash-or">— hoặc —</div>
+
+        <button class="splash-enter-btn" onclick="enterMenu()">Vào Menu Luôn 🚀</button>
+
+        <div class="splash-scan-hint" style="margin-top:16px">Mã QR dẫn đến: <span id="qrUrlText"></span></div>
+    </div>
+</div>
+
+<!-- ============ MAIN MENU ============ -->
+<div class="app" id="app">
+    <div class="header">
+        <h1>Mời Mày Chọn Món<br>Tao Mua Cho Ăn</h1>
+        <p>Chọn món xong thì nhấn Gọi Món nha!</p>
+    </div>
+
+    <div class="main-tabs">
+        <div class="main-tab active" data-tab="drinks" onclick="switchMainTab('drinks')">🍹 Nước</div>
+        <div class="main-tab" data-tab="food" onclick="switchMainTab('food')">🍔 Đồ Ăn</div>
+        <div class="main-tab" data-tab="combo" onclick="switchMainTab('combo')">🎁 Combo</div>
+    </div>
+
+    <div class="sub-tabs" id="subTabs"></div>
+    <div class="menu-grid" id="menuGrid"></div>
+</div>
+
+<div class="cart-bar" id="cartBar">
+    <div class="cart-info">
+        <div class="cart-icon">🛒 <span class="cart-badge" id="cartBadge" style="display:none">0</span></div>
+        <div class="cart-total">Tổng: <span id="cartTotal">0đ</span></div>
+    </div>
+    <button class="order-btn" id="orderBtn" onclick="openOrderModal()" disabled>Gọi Món</button>
+</div>
+
+<!-- Order Modal -->
+<div class="modal-overlay" id="orderModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">Đơn Hàng Của Mày</div>
+            <button class="modal-close" onclick="closeOrderModal()">✕</button>
+        </div>
+        <div class="order-list" id="orderList"></div>
+        <div style="margin:14px 0;padding:12px 16px;background:rgba(255,107,157,0.1);border:1px dashed rgba(255,107,157,0.3);border-radius:12px;text-align:center;font-size:0.82em;color:rgba(255,255,255,0.7);line-height:1.5">
+            ⚠️ Nhấn xác nhận là <b style="color:#f8bbd0">không thay đổi</b> đâu nha!<br>Mập ráng chịu à 😜
+        </div>
+        <div class="customer-section">
+            <input type="text" class="customer-input" id="customerName" placeholder="Tên mày là gì? (bắt buộc)" maxlength="50">
+        </div>
+        <div class="payment-section">
+            <div class="payment-title">Phương thức thanh toán:</div>
+            <div class="payment-methods" style="grid-template-columns:1fr">
+                <div class="payment-method selected" onclick="selectPayment(this,'hieu')" style="border-color:var(--pink);background:rgba(255,107,157,0.15)">
+                    <div class="pm-icon">💸</div>
+                    <div class="pm-name" style="font-size:1em">HIẾU HIẾU HIẾU<br><span style="font-size:0.8em;color:rgba(255,255,255,0.6)">(và chỉ có HIẾU)</span></div>
+                </div>
+            </div>
+        </div>
+        <button class="confirm-order-btn" onclick="confirmOrder()">Xác Nhận Gọi Món 🎉</button>
+    </div>
+</div>
+
+<!-- Success Screen -->
+<div class="success-screen" id="successScreen">
+    <div class="success-icon">🎉</div>
+    <h2>Gọi Món Thành Công!</h2>
+    <p>Đơn hàng của mày đang được xử lý nè</p>
+    <div class="success-order-id" id="successOrderId"></div>
+    <p style="font-size:0.78em;color:rgba(255,255,255,0.5)">Lưu lại mã này để đối chiếu nha!</p>
+    <button class="success-btn" onclick="resetApp()">Đặt Thêm Món</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+// ============ FIREBASE INIT ============
+const firebaseConfig = {
+    apiKey: "AIzaSyA_GqnEFeXuPDTliaFFqGC8thNU0NR3NNc",
+    authDomain: "anchomaulon-42c5a.firebaseapp.com",
+    databaseURL: "https://anchomaulon-42c5a-default-rtdb.firebaseio.com",
+    projectId: "anchomaulon-42c5a",
+    storageBucket: "anchomaulon-42c5a.firebasestorage.app",
+    messagingSenderId: "118061499830",
+    appId: "1:118061499830:web:76fbb0a90ca798e2a42d17"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ============ MENU DATA ============
+const menuData = {
+    drinks: {
+        juice: {
+            label: 'Nước Ép',
+            emoji: '🍊',
+            items: [
+                {id:'j1',name:'Nước Ép Cam Tươi',emoji:'🍊',desc:'Cam tươi vắt nguyên chất, ngọt thanh',price:25000,hot:true},
+                {id:'j2',name:'Nước Ép Dưa Hấu',emoji:'🍉',desc:'Dưa hấu mát lạnh, giải nhiệt',price:25000,hot:false},
+                {id:'j3',name:'Nước Ép Ổi Đỏ',emoji:'🍈',desc:'Ổi đỏ tươi, thơm ngon đậm vị',price:25000,hot:true},
+                {id:'j4',name:'Nước Ép Táo',emoji:'🍏',desc:'Táo tươi ép nguyên chất, giàu vitamin',price:28000,hot:false},
+                {id:'j5',name:'Nước Ép Cà Rốt',emoji:'🥕',desc:'Cà Rốt ép tươi, tốt cho mắt & da',price:25000,hot:false},
+                {id:'j6',name:'Nước Ép Thơm (Dứa)',emoji:'🍍',desc:'Thơm chua ngọt, giúp tiêu hóa',price:25000,hot:false},
+                {id:'j7',name:'Nước Ép Kiwi',emoji:'🥝',desc:'Kiwi xanh chua ngọt, giàu vitamin C',price:30000,hot:true},
+                {id:'j8',name:'Nước Ép Nho',emoji:'🍇',desc:'Nho tím ép nguyên chất, chống lão hóa',price:30000,hot:false},
+                {id:'j9',name:'Nước Ép Lựu',emoji:'🍹',desc:'Lựu đỏ ép tươi, thơm mát bổ dưỡng',price:32000,hot:false},
+                {id:'j10',name:'Nước Ép Dâu Tây',emoji:'🍓',desc:'Dâu tây tươi ép, chua ngọt tuyệt vời',price:32000,hot:true},
+                {id:'j11',name:'Nước Épổi Xanh',emoji:'🥝',desc:'Ổi xanh ép tươi, vị chua tự nhiên',price:25000,hot:false},
+                {id:'j12',name:'Nước Ép Bí Đỏ',emoji:'🎃',desc:'Bí đỏ ép ngọt thanh, bổ não',price:25000,hot:false},
+                {id:'j13',name:'Nước Ép Dưa Leo',emoji:'🥒',desc:'Dưa leo ép mát lạnh, detox da',price:22000,hot:false},
+                {id:'j14',name:'Nước Ép Chanh Tươi',emoji:'🍋',desc:'Chanh tươi ép, vitamin C cực đại',price:20000,hot:false},
+                {id:'j15',name:'Nước Ép Cần Tây',emoji:'🥬',desc:'Cần tây ép detox, giảm cân hiệu quả',price:28000,hot:true}
+            ]
+        },
+        smoothie: {
+            label: 'Sinh Tố',
+            emoji: '🥑',
+            items: [
+                {id:'s1',name:'Sinh Tố Bơ',emoji:'🥑',desc:'Bơ Đắk Lắk xay nhuyễn, béo ngậy',price:35000,hot:true},
+                {id:'s2',name:'Sinh Tố Dâu Tây',emoji:'🍓',desc:'Dâu tây tươi xay, chua ngọt',price:35000,hot:true},
+                {id:'s3',name:'Sinh Tố Xoài',emoji:'🥭',desc:'Xoài cát Chuandesay mịn, thơm lừng',price:30000,hot:false},
+                {id:'s4',name:'Sinh Tố Bơ + Socola',emoji:'🥑',desc:'Bơ Đắk Lắk + socola Bỉ, béo đậm',price:40000,hot:true},
+                {id:'s5',name:'Sinh Tố Dừa',emoji:'🥥',desc:'Thạch dừa non + nước dừa tươi, thanh mát',price:35000,hot:false},
+                {id:'s6',name:'Sinh Tố Kiwi',emoji:'🥝',desc:'Kiwi xanh xay nhuyễn, chua dịu',price:35000,hot:false},
+                {id:'s7',name:'Sinh Tố Nho Tím',emoji:'🍇',desc:'Nho tím xay nguyên xác, chống lão hóa',price:35000,hot:false},
+                {id:'s8',name:'Sinh Tố Mãng Cầu',emoji:'🟣',desc:'Mãng cầu xiêm xay mịn, béo thơm',price:38000,hot:true},
+                {id:'s9',name:'Sinh Tố Chuối + Dâu',emoji:'🍌',desc:'Chuối tiêu + dâu tây, dinh dưỡng',price:33000,hot:false},
+                {id:'s10',name:'Sinh Tố Matcha',emoji:'🍵',desc:'Matcha Nhật + sữa + đá xay, béo vừa',price:38000,hot:true},
+                {id:'s11',name:'Sinh Tố Socola',emoji:'🍫',desc:'Socola Bỉ xay sữa, đậm đà',price:35000,hot:false},
+                {id:'s12',name:'Sinh Tố Bưởi',emoji:'🍊',desc:'Bưởi hồng xay nhuyễn, chua ngọt',price:32000,hot:false},
+                {id:'s13',name:'Sinh Tố Thanh Long',emoji:'🐉',desc:'Thanh long đỏ xay mịn, màu đẹp',price:30000,hot:false},
+                {id:'s14',name:'Sinh Tố Dâu + Bơ',emoji:'🥑',desc:'Dâu tây + bơ, combo béo chua',price:38000,hot:true},
+                {id:'s15',name:'Sinh Tố Khế',emoji:'⭐',desc:'Khế chua xay nhuyễn, vị lạ hấp dẫn',price:28000,hot:false}
+            ]
+        },
+        tea: {
+            label: 'Trà Sữa',
+            emoji: '🧋',
+            items: [
+                {id:'t1',name:'Trà Sữa Trân Châu',emoji:'🧋',desc:'Trà sữa Đài Loan chính gốc, trân châu dẻo',price:30000,hot:true},
+                {id:'t2',name:'Trà Sầu Riêng',emoji:'🧋',desc:'Trà thơm vị sầu riêng, đặc biệt',price:38000,hot:false},
+                {id:'t3',name:'Trà Đào Cam Sả',emoji:'🍑',desc:'Trà đào + cam vàng + sả tươi',price:32000,hot:true},
+                {id:'t4',name:'Trà Chanh Vàng',emoji:'🍋',desc:'Trà xanh pha chanh vàng, thanh mát',price:22000,hot:false},
+                {id:'t5',name:'Trà Sữa Matcha',emoji:'🍵',desc:'Trà sữa + matcha Nhật, béo thơm',price:35000,hot:true},
+                {id:'t6',name:'Trà Sữa Oolong',emoji:'🫖',desc:'Trà oolong Đài Loan + sữa, vị đắng nhẹ',price:32000,hot:false},
+                {id:'t7',name:'Trà Sữa Dâu',emoji:'🍓',desc:'Trà sữa dâu tây tươi, hồng đẹp',price:32000,hot:false},
+                {id:'t8',name:'Trà Đen Sữa',emoji:'☕',desc:'Trà đen đậm + sữa đặc, cổ điển',price:25000,hot:false},
+                {id:'t9',name:'Trà Sữa Khúc Bạch',emoji:'🟤',desc:'Trà sữa + thạch khúc bạch dẻo',price:35000,hot:true},
+                {id:'t10',name:'Trà Sữa Phô Mai',emoji:'🧀',desc:'Trà sữa + kem phô mai mặn trên cùng',price:35000,hot:true}
+            ]
+        },
+        coffee: {
+            label: 'Cà Phê',
+            emoji: '☕',
+            items: [
+                {id:'cf1',name:'Americano Đá',emoji:'☕',desc:'Cà phê đen Americano, đắng nhẹ',price:30000,hot:false},
+                {id:'cf2',name:'Cà Phê Sữa Đá',emoji:'🥛',desc:'Cà phê phin + sữa đặc, truyền thống',price:25000,hot:true},
+                {id:'cf3',name:'Capuchino',emoji:'☕',desc:'Espresso + sữa nóng + bọt sữa',price:35000,hot:false},
+                {id:'cf4',name:'Latte Đá',emoji:'🧊',desc:'Espresso + sữa tươi + đá, béo nhẹ',price:35000,hot:false},
+                {id:'cf5',name:'Matcha Latte Đá',emoji:'🍵',desc:'Matcha Nhật + sữa tươi + đá',price:35000,hot:true},
+                {id:'cf6',name:'Cà Phê Trứng',emoji:'🥚',desc:'Cà phê phin + kem trứng Ý, béo ngậy',price:38000,hot:true}
+            ]
+        }
+    },
+    food: [
+        {id:'f1',name:'Bánh Tráng Trộn',emoji:'🌮',desc:'Bánh tráng trộn thập cẩm, chua cay',price:25000,hot:true},
+        {id:'f2',name:'Bánh Mì Patê',emoji:'🥖',desc:'Bánh mì giòn, patê béo, thịt nướng',price:30000,hot:false},
+        {id:'f3',name:'Khoai Tây Chiên',emoji:'🍟',desc:'Khoai tây chiên giòn + sốt phô mai',price:28000,hot:true},
+        {id:'f4',name:'Gà Rán Giòn',emoji:'🍗',desc:'Gà rán giòn vàng, thơm nức mũi',price:45000,hot:true},
+        {id:'f5',name:'Bò Viên Nướng',emoji:'🍢',desc:'Bò viên nướng than hoa, thơm lừng',price:30000,hot:false},
+        {id:'f6',name:'Nem Chua Rán',emoji:'🥟',desc:'Nem chua rán giòn, chua ngọt',price:28000,hot:false},
+        {id:'f7',name:'Cá Hộp Sấy',emoji:'🐟',desc:'Cá hộ sấy cay nồng, nhậu cực đã',price:32000,hot:false},
+        {id:'f8',name:'Xúc Xích Đức',emoji:'🌭',desc:'Xúc xích nướng giòn ngọt',price:30000,hot:true},
+        {id:'f9',name:'Kimbap Hàn Quốc',emoji:'🍙',desc:'Cơm cuộn nhân thịt bò & rau củ',price:35000,hot:false},
+        {id:'f10',name:'Bánh Flan',emoji:'🍮',desc:'Bánh flan caramel mềm mịn',price:15000,hot:false},
+        {id:'f11',name:'Chè Ba Màu',emoji:'🥣',desc:'Đậu đỏ + đậu xanh + thạch rau câu',price:20000,hot:false},
+        {id:'f12',name:'Bắp Xào Bơ Tỏi',emoji:'🌽',desc:'Bắp xào bơ tỏi thơm lừng',price:25000,hot:true},
+        {id:'f13',name:'Dimsum Hấp',emoji:'🥟',desc:'Dimsum nhân tôm thịt, hấp nóng',price:35000,hot:false},
+        {id:'f14',name:'Phô Mai Que',emoji:'🧀',desc:'Phô mai que chiên giòn, kéo sợi',price:30000,hot:true},
+        {id:'f15',name:'Hotdog Bò',emoji:'🌭',desc:'Bò Úc cuộn xúc xích, nướng than',price:35000,hot:false},
+        {id:'f16',name:'Khoai Lang Chiên',emoji:'🍠',desc:'Khoai lang chiên giòn, ngọt tự nhiên',price:20000,hot:false},
+        {id:'f17',name:'Cơm Sườn Trứng',emoji:'🍚',desc:'Cơm trắng + sườn nướng + trứng ốp la, đầy đủ',price:45000,hot:true},
+        {id:'f18',name:'Phở Bún Bò',emoji:'🍜',desc:'Phở bún bò Huế cay nồng, nước dùng đậm đà',price:40000,hot:true},
+        {id:'f19',name:'Bún Thịt Nướng',emoji:'🍜',desc:'Bún tươi + thịt nướng + rau sống + nước mắm chua ngọt',price:40000,hot:true},
+        {id:'f20',name:'Bò Né',emoji:'🥩',desc:'Bò né trên chảo gang nóng hổi + trứng + bánh mì',price:50000,hot:true}
+    ],
+    combo: [
+        {id:'c1',name:'Combo Đồ Uống + Snack',emoji:'🎉',desc:'1 nước ép/sinh tố + Khoai tây chiên',price:48000,hot:true},
+        {id:'c2',name:'Combo Trà Sữa + Bánh',emoji:'🧁',desc:'1 trà sữa + Bánh flan',price:42000,hot:true},
+        {id:'c3',name:'Combo Bữa Nhẹ',emoji:'🍱',desc:'Bánh mì + Nước ép/trà đào cam sả',price:52000,hot:false},
+        {id:'c4',name:'Combo Đồ Ăn Vặt',emoji:'🍿',desc:'Nem chua rán + Bắp xào + Trà chanh',price:58000,hot:true},
+        {id:'c5',name:'Combo Gà Rán + Nước',emoji:'🍗',desc:'Gà rán giòn + Sinh tố/nước ép',price:68000,hot:false},
+        {id:'c6',name:'Combo Siêu Tiết Kiệm',emoji:'💰',desc:'2 nước + 2 món ăn',price:99000,hot:true},
+        {id:'c7',name:'Combo Cặp Đôi',emoji:'💕',desc:'2 trà sữa + 2 món snack',price:85000,hot:true},
+        {id:'c8',name:'Combo Party',emoji:'🎊',desc:'3 nước + 3 món ăn (nhóm 4-6 người)',price:199000,hot:false}
+    ]
+};
+
+// ============ STATE ============
+let cart = {};
+let selectedPayment = 'hieu';
+let currentMainTab = 'drinks';
+let currentSubTab = 'juice';
+
+// ============ SPLASH ============
+function initSplash() {
+    const menuUrl = window.location.href.split('?')[0].replace('menu.html','menu.html');
+    document.getElementById('qrUrlText').textContent = menuUrl;
+
+    const qrEl = document.getElementById('splashQR');
+    qrEl.innerHTML = '';
+    if(typeof QRCode !== 'undefined') {
+        new QRCode(qrEl, {
+            text: menuUrl,
+            width: 200,
+            height: 200,
+            colorDark: '#1a1a2e',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }
+}
+
+function enterMenu() {
+    document.getElementById('splash').classList.add('hide');
+    setTimeout(() => {
+        document.getElementById('splash').style.display = 'none';
+        document.getElementById('app').classList.add('show');
+        createParticles();
+        switchMainTab('drinks');
+    }, 500);
+}
+
+// ============ PARTICLES ============
+function createParticles() {
+    const c = document.getElementById('particles');
+    const emojis = ['🍊','🍉','🧋','🍵','☕','🍑','🍓','🥑','🌮','🍟','🍗','✨','⭐','🍍','🥥'];
+    for(let i = 0; i < 15; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = Math.random() * 10 + 's';
+        p.style.fontSize = (1 + Math.random() * 1.5) + 'em';
+        c.appendChild(p);
+    }
+}
+
+// ============ TAB SWITCHING ============
+function switchMainTab(tab) {
+    currentMainTab = tab;
+    document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.main-tab[data-tab="${tab}"]`).classList.add('active');
+
+    if(tab === 'drinks') {
+        renderSubTabs();
+        renderMenu();
+    } else if(tab === 'food') {
+        document.getElementById('subTabs').innerHTML = '';
+        renderFoodMenu();
+    } else {
+        document.getElementById('subTabs').innerHTML = '';
+        renderComboMenu();
+    }
+}
+
+function renderSubTabs() {
+    const container = document.getElementById('subTabs');
+    const drinks = menuData.drinks;
+    container.innerHTML = Object.entries(drinks).map(([key, cat]) =>
+        `<div class="sub-tab ${currentSubTab === key ? 'active' : ''}" onclick="switchSubTab('${key}')"><span class="sub-emoji">${cat.emoji}</span>${cat.label}</div>`
+    ).join('');
+}
+
+function switchSubTab(sub) {
+    currentSubTab = sub;
+    document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sub-tab').forEach(t => {
+        if(t.textContent.includes(menuData.drinks[sub].label)) t.classList.add('active');
+    });
+    renderMenu();
+}
+
+// ============ RENDER MENU ============
+function renderMenu() {
+    const grid = document.getElementById('menuGrid');
+    const items = menuData.drinks[currentSubTab].items;
+    grid.innerHTML = items.map(item => renderItem(item)).join('');
+}
+
+function renderFoodMenu() {
+    const grid = document.getElementById('menuGrid');
+    grid.innerHTML = menuData.food.map(item => renderItem(item)).join('');
+}
+
+function renderComboMenu() {
+    const grid = document.getElementById('menuGrid');
+    grid.innerHTML = menuData.combo.map(item => renderItem(item)).join('');
+}
+
+function renderItem(item) {
+    const qty = cart[item.id] || 0;
+    let badge = '';
+    if(item.hot) badge = '<div class="menu-hot">🔥 HOT</div>';
+    else if(item.new) badge = '<div class="menu-new">✨ MỚI</div>';
+
+    return `
+    <div class="menu-item" onclick="toggleItem('${item.id}')">
+        ${badge}
+        <div class="menu-emoji">${item.emoji}</div>
+        <div class="menu-info">
+            <div class="menu-name">${item.name}</div>
+            <div class="menu-desc">${item.desc}</div>
+            <div class="menu-price">${item.price.toLocaleString()}đ</div>
+            <div class="qty-controls" onclick="event.stopPropagation()">
+                <button class="qty-btn" onclick="changeQty('${item.id}',-1)">−</button>
+                <span class="qty-value" id="qty-${item.id}">${qty}</span>
+                <button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button>
+            </div>
+        </div>
+    </div>`;
+}
+
+// ============ CART ============
+function toggleItem(id) { changeQty(id, 1); }
+
+function changeQty(id, delta) {
+    if(!cart[id]) cart[id] = 0;
+    cart[id] = Math.max(0, cart[id] + delta);
+    if(cart[id] === 0) delete cart[id];
+
+    const qtyEl = document.getElementById(`qty-${id}`);
+    if(qtyEl) qtyEl.textContent = cart[id] || 0;
+    updateCart();
+}
+
+function findItem(id) {
+    for(const cat of Object.values(menuData.drinks)) {
+        const f = cat.items.find(i => i.id === id);
+        if(f) return f;
+    }
+    const f2 = menuData.food.find(i => i.id === id);
+    if(f2) return f2;
+    const f3 = menuData.combo.find(i => i.id === id);
+    if(f3) return f3;
+    return null;
+}
+
+function updateCart() {
+    const total = Object.entries(cart).reduce((s, [id, qty]) => {
+        const item = findItem(id);
+        return s + (item ? item.price * qty : 0);
+    }, 0);
+    const count = Object.values(cart).reduce((s, q) => s + q, 0);
+
+    document.getElementById('cartTotal').textContent = total.toLocaleString() + 'đ';
+    document.getElementById('cartBadge').textContent = count;
+    document.getElementById('cartBadge').style.display = count > 0 ? 'flex' : 'none';
+    document.getElementById('orderBtn').disabled = count === 0;
+    document.getElementById('cartBar').classList.toggle('has-items', count > 0);
+}
+
+// ============ ORDER MODAL ============
+function openOrderModal() {
+    const list = document.getElementById('orderList');
+    let html = '';
+    for(const [id, qty] of Object.entries(cart)) {
+        const item = findItem(id);
+        if(!item || qty === 0) continue;
+        html += `<div class="order-item"><div class="order-item-left"><div class="order-item-qty">${qty}</div><div class="order-item-name">${item.emoji} ${item.name}</div></div></div>`;
+    }
+    list.innerHTML = html;
+    document.getElementById('orderModal').classList.add('show');
+}
+
+function closeOrderModal() { document.getElementById('orderModal').classList.remove('show'); }
+
+function selectPayment(el, method) {
+    document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPayment = method;
+}
+
+// ============ CONFIRM ORDER ============
+function confirmOrder() {
+    const name = document.getElementById('customerName').value.trim();
+    if(!name) { alert('Nhập tên mày đi đã!'); document.getElementById('customerName').focus(); return; }
+    if(Object.keys(cart).length === 0) { alert('Chưa chọn món gì hết á?'); return; }
+
+    // Đếm tổng số món
+    const totalItems = Object.values(cart).reduce((s, q) => s + q, 0);
+    const itemNames = Object.entries(cart).map(([id, qty]) => {
+        const item = findItem(id);
+        return item ? `${qty}x ${item.name}` : '';
+    }).filter(Boolean).join(', ');
+
+    const confirmMsg = `🍳 Mày đang gọi:\n\n${itemNames}\n\n总共 ${totalItems} món đó nha!\n\n💸 Thanh toán bằng: HIẾU HIẾU HIẾU\n⚠️ CHỐT KHÔNG THAY ĐỔI ĐÂU NHA!\nMập ráng chịu à 😜🍆🍟🧋\n\nChắc chưa mập?`;
+
+    if(!confirm(confirmMsg)) return;
+
+    const orderId = 'MK' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2,3).toUpperCase();
+    const order = {
+        id: orderId,
+        customer: name,
+        items: Object.entries(cart).map(([id, qty]) => {
+            const item = findItem(id);
+            return { name: item.name, emoji: item.emoji, qty, price: item.price, subtotal: item.price * qty };
+        }),
+        total: Object.entries(cart).reduce((s, [id, qty]) => {
+            const item = findItem(id);
+            return s + (item ? item.price * qty : 0);
+        }, 0),
+        payment: selectedPayment,
+        paymentLabel: 'HIẾU HIẾU HIẾU 😂',
+        time: new Date().toLocaleString('vi-VN'),
+        timestamp: Date.now(),
+        status: 'new'
+    };
+
+    saveOrder(order);
+    document.getElementById('successOrderId').textContent = '#' + orderId;
+    document.getElementById('successScreen').classList.add('show');
+    tryNotifyAdmin(order);
+
+    cart = {};
+    document.getElementById('customerName').value = '';
+    closeOrderModal();
+    updateCart();
+    renderMenu();
+}
+
+function saveOrder(order) {
+    // Gửi lên Firebase cloud
+    db.ref('orders/' + order.id).set(order);
+
+    // Vẫn giữ localStorage backup
+    let orders = JSON.parse(localStorage.getItem('menu_orders') || '[]');
+    orders.unshift(order);
+    localStorage.setItem('menu_orders', JSON.stringify(orders));
+}
+
+function tryNotifyAdmin(order) {
+    window.dispatchEvent(new CustomEvent('newOrder', { detail: order }));
+}
+
+function resetApp() { document.getElementById('successScreen').classList.remove('show'); }
+
+// ============ INIT ============
+window.addEventListener('load', () => {
+    if(typeof QRCode !== 'undefined') {
+        initSplash();
+    } else {
+        setTimeout(initSplash, 500);
+    }
+});
+</script>
+</body>
+</html>

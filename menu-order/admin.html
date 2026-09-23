@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản Trị Đơn Hàng</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--pink:#ff6b9d;--purple:#764ba2;--blue:#667eea;--glass:rgba(255,255,255,0.12);--glass-border:rgba(255,255,255,0.25);--green:#2ecc71;--orange:#f39c12;--red:#e74c3c}
+body{font-family:'Quicksand',sans-serif;min-height:100vh;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);color:#fff}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 50%,rgba(255,107,157,0.15),transparent 50%),radial-gradient(circle at 80% 20%,rgba(102,126,234,0.15),transparent 50%);z-index:0;pointer-events:none}
+
+.app{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:20px}
+
+/* Header */
+.header{text-align:center;padding:20px 0 30px}
+.header h1{font-family:'Dancing Script',cursive;font-size:2.2em;background:linear-gradient(135deg,#f8bbd0,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header p{color:rgba(255,255,255,0.6);margin-top:6px;font-size:0.9em}
+
+/* Stats Bar */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:16px;padding:16px;text-align:center;transition:all 0.3s}
+.stat-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+.stat-num{font-size:1.8em;font-weight:700;line-height:1}
+.stat-label{font-size:0.75em;color:rgba(255,255,255,0.6);margin-top:4px}
+.stat-card:nth-child(1) .stat-num{color:#f39c12}
+.stat-card:nth-child(2) .stat-num{color:#2ecc71}
+.stat-card:nth-child(3) .stat-num{color:#e74c3c}
+.stat-card:nth-child(4) .stat-num{color:#3498db}
+
+/* Tabs */
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:10px 22px;border-radius:25px;border:1px solid var(--glass-border);background:var(--glass);cursor:pointer;font-weight:600;font-size:0.85em;transition:all 0.3s;color:#fff}
+.tab.active{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:transparent;box-shadow:0 4px 20px rgba(255,107,157,0.4)}
+.tab:hover:not(.active){background:rgba(255,255,255,0.2)}
+
+/* QR Section */
+.qr-section{display:none;flex-direction:column;align-items:center;padding:40px 0}
+.qr-section.active{display:flex}
+.qr-container{background:#fff;padding:24px;border-radius:20px;margin-bottom:20px;box-shadow:0 10px 40px rgba(0,0,0,0.3)}
+.qr-label{color:rgba(255,255,255,0.8);text-align:center;margin-top:12px;font-size:0.85em}
+.qr-url{background:var(--glass);border:1px solid var(--glass-border);border-radius:12px;padding:12px 20px;color:#fff;font-size:0.8em;word-break:break-all;margin-top:16px;max-width:500px;text-align:center}
+.qr-actions{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;justify-content:center}
+.qr-btn{padding:12px 28px;border-radius:25px;border:1px solid var(--glass-border);background:var(--glass);color:#fff;font-weight:600;cursor:pointer;transition:all 0.3s;font-family:'Quicksand',sans-serif}
+.qr-btn:hover{background:rgba(255,255,255,0.2);transform:translateY(-2px)}
+.qr-btn.primary{background:linear-gradient(135deg,var(--pink),var(--purple));border:none;box-shadow:0 4px 20px rgba(255,107,157,0.3)}
+
+/* Orders Section */
+.orders-section{display:none}
+.orders-section.active{display:block}
+
+/* Order Card */
+.order-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:20px;padding:20px;margin-bottom:14px;transition:all 0.3s;animation:slideIn 0.4s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.order-card:hover{box-shadow:0 8px 30px rgba(0,0,0,0.2);border-color:rgba(255,255,255,0.4)}
+.order-card.new{border-left:4px solid var(--orange);animation:newPulse 2s infinite}
+@keyframes newPulse{0%,100%{border-left-color:var(--orange)}50%{border-left-color:transparent}}
+
+.order-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.order-id{font-weight:700;font-size:1.05em;color:#f8bbd0}
+.order-time{font-size:0.8em;color:rgba(255,255,255,0.5)}
+.order-customer{font-size:0.9em;color:rgba(255,255,255,0.8)}
+.order-customer strong{color:#fff}
+.order-status{padding:4px 14px;border-radius:20px;font-size:0.75em;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.status-new{background:rgba(243,156,18,0.2);color:var(--orange);border:1px solid rgba(243,156,18,0.3)}
+.status-confirmed{background:rgba(52,152,219,0.2);color:#3498db;border:1px solid rgba(52,152,219,0.3)}
+.status-done{background:rgba(46,204,113,0.2);color:var(--green);border:1px solid rgba(46,204,113,0.3)}
+
+.order-items{margin:14px 0;padding:14px;background:rgba(0,0,0,0.2);border-radius:12px}
+.order-item-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:0.9em}
+.order-item-row+.order-item-row{border-top:1px solid rgba(255,255,255,0.05)}
+.order-item-left{display:flex;align-items:center;gap:8px}
+.order-item-qty{background:var(--pink);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75em}
+.order-item-price{color:#f8bbd0;font-weight:600}
+
+.order-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1)}
+.order-payment{font-size:0.85em;color:rgba(255,255,255,0.6)}
+.order-payment span{color:#fff;font-weight:600}
+.order-total{font-weight:700;font-size:1.1em;color:#f8bbd0}
+.order-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.order-action-btn{padding:8px 18px;border-radius:20px;border:none;font-weight:600;font-size:0.8em;cursor:pointer;transition:all 0.2s;font-family:'Quicksand',sans-serif}
+.order-action-btn.confirm{background:rgba(52,152,219,0.2);color:#3498db;border:1px solid rgba(52,152,219,0.3)}
+.order-action-btn.confirm:hover{background:rgba(52,152,219,0.4)}
+.order-action-btn.done{background:rgba(46,204,113,0.2);color:var(--green);border:1px solid rgba(46,204,113,0.3)}
+.order-action-btn.done:hover{background:rgba(46,204,113,0.4)}
+.order-action-btn.delete{background:rgba(231,76,60,0.2);color:var(--red);border:1px solid rgba(231,76,60,0.3)}
+.order-action-btn.delete:hover{background:rgba(231,76,60,0.4)}
+
+/* Empty State */
+.empty-state{text-align:center;padding:60px 20px;color:rgba(255,255,255,0.4)}
+.empty-state .empty-icon{font-size:4em;margin-bottom:16px}
+.empty-state h3{font-size:1.2em;margin-bottom:8px;color:rgba(255,255,255,0.6)}
+.empty-state p{font-size:0.9em}
+
+/* Notification Toast */
+.toast{position:fixed;top:20px;right:20px;background:linear-gradient(135deg,var(--green),#27ae60);color:#fff;padding:16px 24px;border-radius:16px;z-index:1000;animation:toastIn 0.5s ease,toastOut 0.5s ease 4.5s forwards;box-shadow:0 10px 40px rgba(46,204,113,0.4);max-width:350px;cursor:pointer}
+@keyframes toastIn{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toastOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(100px)}}
+.toast-title{font-weight:700;margin-bottom:4px}
+.toast-body{font-size:0.85em;opacity:0.9}
+
+/* Sound indicator */
+.sound-indicator{position:fixed;bottom:20px;right:20px;background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:50%;width:50px;height:50px;display:flex;align-items:center;justify-content:center;font-size:1.3em;cursor:pointer;z-index:100;transition:all 0.3s}
+.sound-indicator:hover{transform:scale(1.1)}
+.sound-indicator.muted{opacity:0.5}
+
+/* Responsive */
+@media(max-width:600px){
+.stats{grid-template-columns:repeat(2,1fr)}
+.header h1{font-size:1.8em}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+    <div class="header">
+        <h1>📦 Quản Trị Đơn Hàng</h1>
+        <p>Xem đơn hàng real-time từ khách quét QR</p>
+    </div>
+
+    <div class="stats" id="stats">
+        <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Tổng đơn</div></div>
+        <div class="stat-card"><div class="stat-num" id="statNew">0</div><div class="stat-label">Đơn mới</div></div>
+        <div class="stat-card"><div class="stat-num" id="statDone">0</div><div class="stat-label">Hoàn thành</div></div>
+        <div class="stat-card"><div class="stat-num" id="statRevenue">0đ</div><div class="stat-label">Doanh thu</div></div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="qr" onclick="switchTab('qr')">📱 QR Menu</div>
+        <div class="tab" data-tab="orders" onclick="switchTab('orders')">📋 Đơn Hàng Mới</div>
+        <div class="tab" data-tab="history" onclick="switchTab('history')">📁 Lịch Sử</div>
+    </div>
+
+    <!-- QR Section -->
+    <div class="qr-section active" id="qrSection">
+        <div class="qr-container"><div id="qrcode"></div></div>
+        <div class="qr-label">Quét QR bằng điện thoại để mở menu đặt món</div>
+        <div class="qr-url" id="menuUrl"></div>
+        <div class="qr-actions">
+            <button class="qr-btn primary" onclick="copyUrl()">📋 Copy Link</button>
+            <button class="qr-btn" onclick="downloadQR()">⬇️ Tải QR</button>
+            <button class="qr-btn" onclick="refreshOrders()">🔄 Làm Mới</button>
+            <button class="qr-btn" onclick="clearAllOrders()">🗑️ Xóa Tất Cả</button>
+        </div>
+    </div>
+
+    <!-- Orders Section -->
+    <div class="orders-section" id="ordersSection">
+        <div id="ordersList"></div>
+    </div>
+
+    <!-- History Section -->
+    <div class="orders-section" id="historySection">
+        <div id="historyList"></div>
+    </div>
+</div>
+
+<div class="sound-indicator" id="soundToggle" onclick="toggleSound()" title="Bật/Tắt âm thanh">🔔</div>
+
+<script>
+// ============ FIREBASE INIT ============
+const firebaseConfig = {
+    apiKey: "AIzaSyA_GqnEFeXuPDTliaFFqGC8thNU0NR3NNc",
+    authDomain: "anchomaulon-42c5a.firebaseapp.com",
+    databaseURL: "https://anchomaulon-42c5a-default-rtdb.firebaseio.com",
+    projectId: "anchomaulon-42c5a",
+    storageBucket: "anchomaulon-42c5a.firebasestorage.app",
+    messagingSenderId: "118061499830",
+    appId: "1:118061499830:web:76fbb0a90ca798e2a42d17"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ============ CONFIG ============
+let soundEnabled = true;
+let orders = [];
+let currentTab = 'qr';
+let isFirstLoad = true;
+
+// ============ INIT ============
+function init() {
+    generateQR();
+    loadOrdersRealtime();
+    if('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+}
+
+// ============ QR CODE ============
+function generateQR() {
+    const menuUrl = window.location.origin + window.location.pathname.replace('admin.html', 'menu.html');
+    document.getElementById('menuUrl').textContent = menuUrl;
+
+    const qrContainer = document.getElementById('qrcode');
+    qrContainer.innerHTML = '';
+    new QRCode(qrContainer, {
+        text: menuUrl,
+        width: 250,
+        height: 250,
+        colorDark: '#1a1a2e',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+    });
+}
+
+function copyUrl() {
+    const url = document.getElementById('menuUrl').textContent;
+    navigator.clipboard.writeText(url).then(() => {
+        showToast('Đã Copy!', 'Link menu đã được copy vào clipboard');
+    }).catch(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = url;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('Đã Copy!', 'Link menu đã được copy vào clipboard');
+    });
+}
+
+function downloadQR() {
+    const canvas = document.querySelector('#qrcode canvas');
+    if(canvas) {
+        const link = document.createElement('a');
+        link.download = 'QR_Menu.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    } else {
+        const img = document.querySelector('#qrcode img');
+        if(img) {
+            const link = document.createElement('a');
+            link.download = 'QR_Menu.png';
+            link.href = img.src;
+            link.click();
+        }
+    }
+}
+
+// ============ FIREBASE ORDERS ============
+function loadOrdersRealtime() {
+    db.ref('orders').orderByChild('timestamp').on('value', (snapshot) => {
+        orders = [];
+        snapshot.forEach((child) => {
+            orders.unshift(child.val());
+        });
+        orders.reverse();
+        updateStats();
+        renderOrders();
+        renderHistory();
+    });
+
+    // Listen for new orders
+    db.ref('orders').on('child_added', (snapshot) => {
+        const newOrder = snapshot.val();
+        if(!isFirstLoad && newOrder.status === 'new') {
+            showToast('🔔 ĐƠN HÀNG MỚI!', `${newOrder.customer} đặt ${newOrder.items.length} món`);
+
+            if(Notification.permission === 'granted') {
+                new Notification('🔔 Đơn hàng mới!', {
+                    body: `${newOrder.customer} đặt ${newOrder.items.length} món - ${newOrder.total.toLocaleString()}đ`
+                });
+            }
+        }
+    });
+
+    setTimeout(() => { isFirstLoad = false; }, 2000);
+}
+
+function refreshOrders() {
+    showToast('Làm mới!', 'Dữ liệu tự cập nhật real-time từ Firebase');
+}
+
+function clearAllOrders() {
+    if(confirm('Xóa TẤT CẢ đơn hàng? Không thể hoàn tác!')) {
+        db.ref('orders').remove();
+        showToast('Đã xóa', 'Tất cả đơn hàng đã bị xóa');
+    }
+}
+
+function updateStats() {
+    const total = orders.length;
+    const newCount = orders.filter(o => o.status === 'new').length;
+    const done = orders.filter(o => o.status === 'done').length;
+    const revenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statNew').textContent = newCount;
+    document.getElementById('statDone').textContent = done;
+    document.getElementById('statRevenue').textContent = revenue.toLocaleString() + 'đ';
+}
+
+function renderOrders() {
+    const list = document.getElementById('ordersList');
+    const pendingOrders = orders.filter(o => o.status !== 'done');
+
+    if(pendingOrders.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <h3>Chưa có đơn hàng nào</h3>
+                <p>Đợi khách quét QR và đặt món nha!</p>
+            </div>
+        `;
+        return;
+    }
+
+    list.innerHTML = pendingOrders.map(order => renderOrderCard(order)).join('');
+}
+
+function renderHistory() {
+    const list = document.getElementById('historyList');
+    const doneOrders = orders.filter(o => o.status === 'done');
+
+    if(doneOrders.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📁</div>
+                <h3>Chưa có lịch sử</h3>
+                <p>Đơn hàng hoàn thành sẽ hiển thị ở đây</p>
+            </div>
+        `;
+        return;
+    }
+
+    list.innerHTML = doneOrders.map(order => renderOrderCard(order)).join('');
+}
+
+function renderOrderCard(order) {
+    const statusClass = `status-${order.status}`;
+    const statusLabel = {new:'Mới',confirmed:'Đã Xác Nhận',done:'Hoàn Thành'}[order.status] || 'Mới';
+    const paymentLabel = order.paymentLabel || 'HIẾU HIẾU HIẾU 😂';
+
+    return `
+        <div class="order-card ${order.status === 'new' ? 'new' : ''}">
+            <div class="order-header">
+                <div>
+                    <div class="order-id">#${order.id}</div>
+                    <div class="order-time">${order.time}</div>
+                </div>
+                <div class="order-status ${statusClass}">${statusLabel}</div>
+            </div>
+            <div class="order-customer">Khách: <strong>${order.customer}</strong></div>
+            <div class="order-items">
+                ${(order.items || []).map(item => `
+                    <div class="order-item-row">
+                        <div class="order-item-left">
+                            <div class="order-item-qty">${item.qty}</div>
+                            <div>${item.emoji} ${item.name}</div>
+                        </div>
+                        <div class="order-item-price">${(item.subtotal || 0).toLocaleString()}đ</div>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="order-footer">
+                <div class="order-payment">Thanh toán: <span>${paymentLabel}</span></div>
+                <div class="order-total">${(order.total || 0).toLocaleString()}đ</div>
+            </div>
+            <div class="order-actions">
+                ${order.status === 'new' ? `
+                    <button class="order-action-btn confirm" onclick="updateOrderStatus('${order.id}','confirmed')">✅ Xác Nhận</button>
+                ` : ''}
+                ${order.status === 'confirmed' ? `
+                    <button class="order-action-btn done" onclick="updateOrderStatus('${order.id}','done')">🎉 Hoàn Thành</button>
+                ` : ''}
+                <button class="order-action-btn delete" onclick="deleteOrder('${order.id}')">🗑️ Xóa</button>
+            </div>
+        </div>
+    `;
+}
+
+function updateOrderStatus(id, status) {
+    db.ref('orders/' + id + '/status').set(status);
+    const msg = status === 'confirmed' ? 'đã xác nhận' : 'đã hoàn thành';
+    showToast('Cập nhật!', `Đơn #${id} ${msg}`);
+}
+
+function deleteOrder(id) {
+    if(confirm(`Xóa đơn #${id}?`)) {
+        db.ref('orders/' + id).remove();
+        showToast('Đã xóa', `Đơn #${id} đã bị xóa`);
+    }
+}
+
+// ============ TABS ============
+function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+
+    document.getElementById('qrSection').classList.toggle('active', tab === 'qr');
+    document.getElementById('ordersSection').classList.toggle('active', tab === 'orders');
+    document.getElementById('historySection').classList.toggle('active', tab === 'history');
+}
+
+// ============ TOAST ============
+function showToast(title, body) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<div class="toast-title">${title}</div><div class="toast-body">${body}</div>`;
+    toast.onclick = () => toast.remove();
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+
+    if(soundEnabled) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.setValueAtTime(800, ctx.currentTime);
+            osc.frequency.setValueAtTime(1000, ctx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(1200, ctx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.5);
+        } catch(e) {}
+    }
+}
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    document.getElementById('soundToggle').textContent = soundEnabled ? '🔔' : '🔕';
+    document.getElementById('soundToggle').classList.toggle('muted', !soundEnabled);
+}
+
+init();
+</script>
+</body>
+</html>
